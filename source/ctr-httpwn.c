@@ -6,7 +6,6 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <3ds.h>
-#include <ctype.h>
 
 #include "config.h"
 
