@@ -6,6 +6,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <3ds.h>
+#include <ctype.h>
 
 #include "config.h"
 
@@ -476,6 +477,28 @@ Result download_config(char *url, u8 *cert, u32 certsize, u8 *filebuffer, u32 dl
 	return 0;
 }
 
+char* load_url_file()
+{
+	char* ret; int len;
+	FILE* file;
+
+	file = fopen("url_config.txt", "r");
+	if (file)
+	{
+		fseek(file, 0, SEEK_END);
+		len = ftell(file);
+		ret = (char*) malloc(sizeof(char) * len);
+		rewind(file);
+		while(!feof(file))
+		{
+			fscanf(file, "%s", ret);
+		}
+		return ret;
+	}
+
+	return NULL;
+}
+
 Result httpwn_setup(char *serverconfig_localpath)
 {
 	Result ret = 0;
@@ -555,8 +578,22 @@ Result httpwn_setup(char *serverconfig_localpath)
 	}
 	memset(filebuffer, 0, filebuffer_size);
 
+	char* conf_url = load_url_file();
 	printf("Downloading config...\n");
-	ret = download_config("https://yls8.mtheall.com/ctr-httpwn/config.php", cert, certsize, filebuffer, filebuffer_size-1, &statuscode);
+
+	if (conf_url==NULL)
+	{
+		printf("Unable to load url from url_config.txt. Using default url...\n");
+		ret = download_config("https://yls8.mtheall.com/ctr-httpwn/config.php", cert, certsize, filebuffer, filebuffer_size-1, &statuscode);
+	}
+	else
+	{
+		printf("Trying to download config from \n%s\n", conf_url);
+		ret = download_config(conf_url, cert, certsize, filebuffer, filebuffer_size-1, &statuscode);
+	}
+	
+	free(conf_url);
+	
 	if(ret!=0)
 	{
 		printf("Config downloading failed: 0x%08x.\n", (unsigned int)ret);
