@@ -1,0 +1,1 @@
+http://your-server-url-here.com/NetUpdateSOAP.php
