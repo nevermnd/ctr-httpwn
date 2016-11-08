@@ -6,6 +6,8 @@ a static config file is provided. This will, at least allow access to the eShop.
 
 The static config file used here is based on [this](https://github.com/Plailect/Guide/blob/master/server_config.xml) file.
 
+The current `url_config.txt` is ponting to http://skiptirengu.tk which DOES NOT HAVE a SSL certificate.
+
 # Usage
 
 - Download the file `ctr-httpwn.zip`.
